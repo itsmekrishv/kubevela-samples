@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: service-tracker
+  namespace: argocd
+spec:
+  project: default
+  source:
+    path: charts/reltio
+    repoURL: git@bitbucket.org:reltio-ondemand/team-cloudplatform-iac.git
+    targetRevision: feature/monorepo
+    helm:
+      valueFiles:
+        - values.yaml
+        - ../../infra-provision/compute-plane/cloud/aws/regions/us-east-1/eks-iqa-us-01/environments/mr01-dev/override-values.yaml
+        # Modify the override value accordigly. 
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    preserveResourcesOnDeletion: true
+    automated:
+      selfHeal: true
+      prune: true
+      allowEmpty: false
+    managedNamespaceMetadata:
+      labels:
+        istio-injection: enabled
+        created-by: argocd
+    syncOptions:
+      - CreateNamespace=true

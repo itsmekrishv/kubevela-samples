@@ -2,6 +2,7 @@ apiVersion: core.oam.dev/v1beta1
 kind: Application
 metadata:
   name: service-tracker
+  namespace: default
 spec:
   components:
     - name: service-tracker-ui
@@ -17,7 +18,7 @@ spec:
           - name: QUAKES_API_ROOT
             value: "http://quakes-api.default.svc.cluster.local:3012/"
       traits:
-        - type: ingress
+        - type: ingress-1-20
           properties:
             domain: localhost
             http:
